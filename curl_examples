@@ -1,0 +1,24 @@
+curl 'http://grooveshark.com/more.php?getStreamKeyFromSongIDEx' -H 'Content-Type: application/json' --data-binary '{"parameters":{"type":1024,"mobile":true,"songID":33364907,"country":{"IPR":0,"CC3":0,"CC1":16384,"CC4":0,"ID":15,"DMA":0,"CC2":0},"prefetch":false},"header":{"client":"jsqueue","session":"69653e61f4fe4525d8e1470444a0054d","token":"c13cb20f6bbdf5a53e7a6430fc137abdec6d0d16f3c7a7","country":{"IPR":0,"CC3":0,"CC1":16384,"CC4":0,"ID":15,"DMA":0,"CC2":0},"privacy":0,"clientRevision":"20130520"},"method":"getStreamKeyFromSongIDEx"}' --compressed
+
+
+curl 'http://grooveshark.com/more.php?getResultsFromSearch' -H 'Content-Type: application/json' --data-binary '{"header":{"client":"htmlshark","token":"d92f8f14124c506ef446e2e83d94048d067781a81d1b9f","session":"3066bd01da5542996da548edbffb7004","clientRevision":"20130520","privacy":"0","country":{"IPR":"1","ID":"223","CC1":"0","CC2":"0","CC3":"0","CC4":"2147483648"}},"parameters":{"guts":"0","query":"lady in red","ppOverride":"false","type":["Songs","Artists","Albums","Playlists"]},"method":"getResultsFromSearch"}' --compressed
+
+
+curl 'https://grooveshark.com/more.php?getCommunicationToken' -H 'Content-Type: text/plain' -H 'Accept: application/json, text/javascript, */*; q=0.01' -H 'Referer: http://grooveshark.com/' -H 'Connection: keep-alive' --data-binary '{"header":{"client":"htmlshark","clientRevision":"20130520","privacy":0,"country":{"ID":15,"CC1":16384,"CC2":0,"CC3":0,"CC4":0,"DMA":0,"IPR":0},"uuid":"AA3F0BAD-D531-4990-B5DE-0E214E359EE9","session":"69653e61f4fe4525d8e1470444a0054d"},"method":"getCommunicationToken","parameters":{"secretKey":"f05841654db36ce1208b9658d0069584"}}' --compressed
+
+
+Test 1
+--------
+custom sessionid = 3066bd01da5542996da548edbffb7004
+
+
+curl 'https://grooveshark.com/more.php?getCommunicationToken' -H 'Content-Type: text/plain' -H 'Accept: application/json, text/javascript, */*; q=0.01' -H 'Referer: http://grooveshark.com/' -H 'Connection: keep-alive' --data-binary '{"header":{"client":"htmlshark","clientRevision":"20130520","privacy":0,"country":{"ID":15,"CC1":16384,"CC2":0,"CC3":0,"CC4":0,"DMA":0,"IPR":0},"uuid":"AA3F0BAD-D531-4990-B5DE-0E214E359EE9","session":"3066bd01da5542996da548edbffb7004"},"method":"getCommunicationToken","parameters":{"secretKey":"80f6df2b59c13fb3531022b3eda2b49e"}}' --compressed
+
+md5 received: d59708a1ba3ad143a81778060a98201360e722f0
+
+token sha1    :
+getStreamKeyFromSongIDEx:d59708a1ba3ad143a81778060a98201360e722f0:tastyTacos:a97a2c
+a97a2ca260f961bc9c2a00da3eeaf056746df117ba8779
+
+curl 'http://grooveshark.com/more.php?getStreamKeyFromSongIDEx' -H 'Content-Type: application/json' --data-binary '{"parameters":{"type":1024,"mobile":true,"songID":33364907,"country":{"IPR":0,"CC3":0,"CC1":16384,"CC4":0,"ID":15,"DMA":0,"CC2":0},"prefetch":false},"header":{"client":"htmlshark","session":"3066bd01da5542996da548edbffb7004","token":"a97a2ca260f961bc9c2a00da3eeaf056746df117ba8779","country":{"IPR":0,"CC3":0,"CC1":16384,"CC4":0,"ID":15,"DMA":0,"CC2":0},"privacy":0,"clientRevision":"20120830"},"method":"getStreamKeyFromSongIDEx"}' --compressed
+

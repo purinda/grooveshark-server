@@ -11,8 +11,8 @@
 
 
 QRequest::QRequest(QObject *parent) :
-    QObject(parent)
-{
+    QObject(parent) {
+
     manager = new QNetworkAccessManager();
     currentPostActionId = -1;
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(dataReceived(QNetworkReply*)));
@@ -45,6 +45,7 @@ void QRequest::postData(QString url, QString data, int postActionId) {
 }
 
 void QRequest::dataReceived(QNetworkReply *reply) {
+
     reply->deleteLater();
     QByteArray response = reply->readAll();
     qDebug() << "RESPONSE: " << response;
@@ -58,8 +59,8 @@ void QRequest::dataReceived(QNetworkReply *reply) {
 }
 
 
-QString QRequest::jsonEncode(const QMap<QString, QVariant> &map)
-{
+QString QRequest::jsonEncode(const QMap<QString, QVariant> &map) {
+
     QJsonObject jsonObj;
 
     foreach(QString key, map.keys()) {

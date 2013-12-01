@@ -1,7 +1,6 @@
 #include "qgroovesession.h"
 
-QGrooveSession::QGrooveSession(QObject *parent) : QObject(parent)
-{
+QGrooveSession::QGrooveSession(QObject *parent) : QObject(parent) {
     this->nam = new QNetworkAccessManager();
     this->gsRequest = new QRequest();
 
@@ -15,8 +14,7 @@ QGrooveSession::QGrooveSession(QObject *parent) : QObject(parent)
     QNetworkReply* reply = nam->get(QNetworkRequest(url));
 }
 
-void QGrooveSession::onLoadTokenDataSlot(QNetworkReply* reply)
-{
+void QGrooveSession::onLoadTokenDataSlot(QNetworkReply* reply) {
     // Reading attributes of the reply
     QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
     // Or the target URL if it was a redirect:
@@ -59,8 +57,8 @@ void QGrooveSession::onLoadTokenDataSlot(QNetworkReply* reply)
     this->getCommunicationToken();
 }
 
-void QGrooveSession::loadCommunicationToken(QString tokenResponse)
-{
+void QGrooveSession::loadCommunicationToken(QString tokenResponse) {
+
     QJsonDocument jsonDocument = QJsonDocument::fromJson(tokenResponse.toUtf8());
     QJsonObject parentObject = jsonDocument.object();
     QJsonValue value = parentObject.value(QString("result"));
@@ -159,11 +157,17 @@ QJsonObject QGrooveSession::getCountryJsonObject() {
     return this->gsCountry;
 }
 
+bool QGrooveSession::isActive() {
+    return this->sessionActive;
+}
+
 void QGrooveSession::onResponse(int postActionId, QString response) {
     switch (postActionId) {
-        case 2:
-            this->loadCommunicationToken(response);
-            emit tokenDataLoaded();
-            break;
+    case 2:
+        this->loadCommunicationToken(response);
+        emit tokenDataLoaded();
+        sessionActive = true;
+        break;
+
     }
 }

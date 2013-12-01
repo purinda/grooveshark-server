@@ -19,8 +19,8 @@ private:
     QJsonObject gsCountry;
     QString gsEndpoint;
     QString gsHttpHost;
-
     QRequest *gsRequest;
+    bool sessionActive = false;
 
 private slots:
     void onLoadTokenDataSlot(QNetworkReply* reply);
@@ -45,6 +45,7 @@ public:
     QString getCountryJsonString();
     QJsonObject getCountryJsonObject();
 
+    bool isActive();
     void loadTokenData();
     void getCommunicationToken();
     QMap<QString, QVariant> getHeaderMap(QString method);

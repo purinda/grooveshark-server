@@ -22,3 +22,7 @@ a97a2ca260f961bc9c2a00da3eeaf056746df117ba8779
 
 curl 'http://grooveshark.com/more.php?getStreamKeyFromSongIDEx' -H 'Content-Type: application/json' --data-binary '{"parameters":{"type":1024,"mobile":true,"songID":33364907,"country":{"IPR":0,"CC3":0,"CC1":16384,"CC4":0,"ID":15,"DMA":0,"CC2":0},"prefetch":false},"header":{"client":"htmlshark","session":"3066bd01da5542996da548edbffb7004","token":"a97a2ca260f961bc9c2a00da3eeaf056746df117ba8779","country":{"IPR":0,"CC3":0,"CC1":16384,"CC4":0,"ID":15,"DMA":0,"CC2":0},"privacy":0,"clientRevision":"20120830"},"method":"getStreamKeyFromSongIDEx"}' --compressed
 
+
+Getting Song URL
+---------------------
+{"header":{"session":"afead802cc999a61edbba65f6fec4f9a","serviceVersion":"20100903","prefetchEnabled":true},"result":{"FileID":"38821006","uSecs":"246000000","FileToken":"4eITHT","ts":1385818326,"isMobile":false,"SongID":33364907,"streamKey":"ec1f50c82ce096421b75baf59b1da360346254a1_5299efde_1fd1bab_2505c8e_fd4cd64a_1_400","Expires":1385820126,"streamServerID":268435456,"ip":"stream69a-he.grooveshark.com"}}

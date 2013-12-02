@@ -15,6 +15,7 @@ private:
     QGrooveSession *gsSession;
     QRequest *gsRequest;
     QMediaPlayer *player;
+    int volumeLevel = 100;
 
     QMap<QString, QVariant> getSongData(QString reponse);
 
@@ -25,10 +26,17 @@ private slots:
 public:
     explicit QPlayer(QObject *parent = 0);
 
-    void getStreamKeyFromSongIDEx(u_int32_t songId);
+    void getStreamKeyFromSongIDEx(ulong songId);
 
 public slots:
     void start();
+
+    // Player control
+    void onReceiveSongId(ulong songId);
+    void onPause();
+    void onPlay();
+    void onStop();
+    void onSetVolume(int vol);
 };
 
 #endif // QPLAYER_H

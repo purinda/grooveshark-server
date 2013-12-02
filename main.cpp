@@ -5,10 +5,14 @@
 
 #include "qserver.h"
 #include "lib/grooveshark/qplayer.h"
+#include "qconfig.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+
+    // Init config
+    //QConfig::instance()->initConfig(&a);
 
     //
     // Start TCP Server thread
@@ -26,8 +30,6 @@ int main(int argc, char *argv[])
     QObject::connect(threadServer, SIGNAL(finished()),
                      threadServer, SLOT(deleteLater()));
 
-    threadServer->start();
-
     //
     // Start Grooveshark Player thread
     //
@@ -40,6 +42,24 @@ int main(int argc, char *argv[])
     QObject::connect(threadPlayer, SIGNAL(finished()),
                      threadPlayer, SLOT(deleteLater()));
 
+    //
+    // IPC Signals required between server and player
+    //
+    QObject::connect(tcpServer, SIGNAL(playSong(ulong)),
+                     gsPlayer, SLOT(onReceiveSongId(ulong)));
+    QObject::connect(tcpServer, SIGNAL(pauseSong()),
+                     gsPlayer, SLOT(onPause()));
+    QObject::connect(tcpServer, SIGNAL(playSong()),
+                     gsPlayer, SLOT(onPlay()));
+    QObject::connect(tcpServer, SIGNAL(stopSong()),
+                     gsPlayer, SLOT(onStop()));
+    QObject::connect(tcpServer, SIGNAL(setVolume(int)),
+                     gsPlayer, SLOT(onSetVolume(int)));
+
+    //
+    // Start threads
+    //
+    threadServer->start();
     threadPlayer->start();
 
     return a.exec();

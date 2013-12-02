@@ -14,7 +14,7 @@ custom sessionid = 3066bd01da5542996da548edbffb7004
 
 curl 'https://grooveshark.com/more.php?getCommunicationToken' -H 'Content-Type: text/plain' -H 'Accept: application/json, text/javascript, */*; q=0.01' -H 'Referer: http://grooveshark.com/' -H 'Connection: keep-alive' --data-binary '{"header":{"client":"htmlshark","clientRevision":"20130520","privacy":0,"country":{"ID":15,"CC1":16384,"CC2":0,"CC3":0,"CC4":0,"DMA":0,"IPR":0},"uuid":"AA3F0BAD-D531-4990-B5DE-0E214E359EE9","session":"3066bd01da5542996da548edbffb7004"},"method":"getCommunicationToken","parameters":{"secretKey":"80f6df2b59c13fb3531022b3eda2b49e"}}' --compressed
 
-md5 received: d59708a1ba3ad143a81778060a98201360e722f0
+md5 received: 1160c7f4cfe0bd0775df0c53cf7f418b2ff4fd87
 
 token sha1    :
 getStreamKeyFromSongIDEx:d59708a1ba3ad143a81778060a98201360e722f0:tastyTacos:a97a2c

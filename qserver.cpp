@@ -5,32 +5,114 @@ QServer::QServer(QObject *parent) :
 
 }
 
-void QServer::handleRequest() {
+void QServer::start() {
+
+    if (networkSession) {
+         QNetworkConfiguration config = networkSession->configuration();
+         QString id;
+         if (config.type() == QNetworkConfiguration::UserChoice)
+             id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
+         else
+             id = config.identifier();
+
+         QSettings settings(QSettings::UserScope, QLatin1String("Trolltech"));
+         settings.beginGroup(QLatin1String("QtNetwork"));
+         settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
+         settings.endGroup();
+     }
+
+     tcpServer = new QTcpServer(this);
+     if (!tcpServer->listen()) {
+         qDebug() << "Unable to start the GrooveShark server! Aborting... " << endl;
+         tcpServer->close();
+         return;
+     }
+
+     QString ipAddress;
+     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+     // use the first non-localhost IPv4 address
+     for (int i = 0; i < ipAddressesList.size(); ++i) {
+         if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
+             ipAddressesList.at(i).toIPv4Address()) {
+             ipAddress = ipAddressesList.at(i).toString();
+             break;
+         }
+     }
+     // if we did not find one, use IPv4 localhost
+     if (ipAddress.isEmpty()) {
+         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
+     }
+
+     qDebug() << (tr("Grooveshark Server Started\n"
+                     "The server is running on\n\nIP: %1\nport: %2\n\n")
+                     .arg(ipAddress).arg(tcpServer->serverPort()));
+
+     connect(this->tcpServer, SIGNAL(newConnection()),
+             this, SLOT(onClientRequest()));
+
+}
+
+void QServer::onClientRequest() {
     qDebug() << "Client connected" << endl;
 
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_0);
-
-    out << (quint16)0;
-    out << "Hello from server" << endl;
-    out.device()->seek(0);
-    out << (quint16)(block.size() - sizeof(quint16));
-
-    QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
+    clientConnection = tcpServer->nextPendingConnection();
     connect(clientConnection, SIGNAL(disconnected()),
             clientConnection, SLOT(deleteLater()));
 
+    connect(clientConnection, SIGNAL(readyRead()),
+            this, SLOT(onResponse()));
+}
 
-    QString line;
-    do {
-        line = readLine( clientConnection );
-        if (line.length() > 0) {
-            writeLine( clientConnection, line );
+void QServer::onResponse() {
+    qDebug() << "Request received" << endl;
+
+    QRegExp matchRequests("(\\w+)\\s?(\\d*)");
+    QString command, param;
+
+    while(clientConnection->canReadLine())
+    {
+        QByteArray ba = clientConnection->readLine();
+        QString line  = QString(ba).simplified();
+
+        command.clear();
+        param.clear();
+
+        if (matchRequests.indexIn(line) != -1) {
+            command = matchRequests.cap(1);
+            param   = matchRequests.cap(2);
         }
-    } while (line.length() > 0);
 
-    clientConnection->disconnectFromHost();
+        if (command == "PLAY") {
+            if (param.toInt() != 0) {
+                emit playSong(param.toULong());
+            }
+        }
+
+        if (command == "PAUSE") {
+            emit pauseSong();
+        }
+
+        if (command == "PLAY") {
+            emit playSong();
+        }
+
+        if (command == "STOP") {
+            emit stopSong();
+        }
+
+        if (command == "VOL") {
+            if (param.toInt() != 0) {
+                emit setVolume(param.toInt());
+            }
+        }
+
+        if (command == "SAYBYE") {
+            clientConnection->disconnectFromHost();
+        }
+
+        qDebug() << ">> " << line << endl;
+        // qDebug() << "Command: " << command << endl << "Param: " << param << endl;
+    }
 }
 
 QString QServer::readLine(QTcpSocket *socket )
@@ -85,50 +167,4 @@ int QServer::waitForInput( QTcpSocket *socket ) {
 bool QServer::getRunThread() {
     QMutexLocker lock( &mMutex );
     return mRunThread;
-}
-
-void QServer::start() {
-
-    if (networkSession) {
-         QNetworkConfiguration config = networkSession->configuration();
-         QString id;
-         if (config.type() == QNetworkConfiguration::UserChoice)
-             id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
-         else
-             id = config.identifier();
-
-         QSettings settings(QSettings::UserScope, QLatin1String("Trolltech"));
-         settings.beginGroup(QLatin1String("QtNetwork"));
-         settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
-         settings.endGroup();
-     }
-
-     tcpServer = new QTcpServer(this);
-     if (!tcpServer->listen()) {
-         qDebug() << "Unable to start the GrooveShark server! Aborting... " << endl;
-         tcpServer->close();
-         return;
-     }
-
-     QString ipAddress;
-     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
-     // use the first non-localhost IPv4 address
-     for (int i = 0; i < ipAddressesList.size(); ++i) {
-         if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
-             ipAddressesList.at(i).toIPv4Address()) {
-             ipAddress = ipAddressesList.at(i).toString();
-             break;
-         }
-     }
-     // if we did not find one, use IPv4 localhost
-     if (ipAddress.isEmpty()) {
-         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
-     }
-
-     qDebug() << (tr("The server is running on\n\nIP: %1\nport: %2\n\n"
-                     "Send Grooveshark SongIDs to the listening service.")
-                     .arg(ipAddress).arg(tcpServer->serverPort()));
-
-     connect(this->tcpServer, SIGNAL(newConnection()), this, SLOT(handleRequest()));
-
 }

@@ -10,6 +10,7 @@
 #include <QDataStream>
 #include <QMutex>
 #include <QThread>
+#include <QRegExp>
 
 class QTcpServer;
 class QNetworkSession;
@@ -20,6 +21,8 @@ class QServer : public QObject
 private:
     QTcpServer *tcpServer;
     QNetworkSession *networkSession;
+    QTcpSocket *clientConnection;
+
     QMutex mMutex;
     bool mRunThread;
 
@@ -28,9 +31,9 @@ private:
     QString readLine(QTcpSocket *socket);
     void writeLine(QTcpSocket *socket, const QString &line);
 
-
 private slots:
-    void handleRequest();
+    void onClientRequest();
+    void onResponse();
 
 public:
     explicit QServer(QObject *parent = 0);
@@ -40,6 +43,13 @@ public slots:
 
 signals:
     void finished();
+
+    // Signals used for controlling the player
+    void playSong(ulong songId);
+    void setVolume(int volume);
+    void pauseSong();
+    void playSong();
+    void stopSong();
 };
 
 #endif // QSERVER_H

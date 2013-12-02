@@ -15,8 +15,12 @@ class QRequest : public QObject
 {
     Q_OBJECT
 private:
+    QMutex mutex;
     QNetworkAccessManager *manager;
     int currentPostActionId;
+
+private slots:
+    void dataReceived(QNetworkReply *reply);
 
 public:
     explicit QRequest(QObject *parent = 0);
@@ -32,11 +36,6 @@ public:
 signals:
     void dataPosted(int postActionId, QString resultText);
 
-private slots:
-    void dataReceived(QNetworkReply *reply);
-
-private:
-    QMutex mutex;
 };
 
 

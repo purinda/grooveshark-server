@@ -9,8 +9,8 @@ QPlayer::QPlayer(QObject *parent) : QObject(parent) {
 QMap<QString, QVariant> QPlayer::getSongData(QString response) {
 
     QJsonDocument jsonDocument = QJsonDocument::fromJson(response.toUtf8());
-    QJsonObject parentObject = jsonDocument.object();
-    QJsonValue value = parentObject.value(QString("result"));
+    QJsonObject parentObject   = jsonDocument.object();
+    QJsonValue value           = parentObject.value(QString("result"));
 
     QMap<QString, QVariant> data;
     data["FileID"]    = value.toObject()["FileID"].toString();
@@ -22,7 +22,7 @@ QMap<QString, QVariant> QPlayer::getSongData(QString response) {
     return data;
 }
 
-void QPlayer::getStreamKeyFromSongIDEx(u_int32_t songId) {
+void QPlayer::getStreamKeyFromSongIDEx(ulong songId) {
     const QString GS_FUNCTION = "getStreamKeyFromSongIDEx";
 
     // Generate request parameters JSON string
@@ -47,9 +47,9 @@ void QPlayer::getStreamKeyFromSongIDEx(u_int32_t songId) {
 }
 
 void QPlayer::onTokenDataLoaded() {
-    // Token data ready in GrooveShark Session
-    // Test 1 - Load Song
-    getStreamKeyFromSongIDEx(33364907);
+    // GrooveShark token data ready
+    // TODO:
+    //  - Set a flag stating that the Grooveshark is ready to accept requests to control the player.
 }
 
 void QPlayer::onResponse(int postActionId, QString response) {
@@ -58,13 +58,36 @@ void QPlayer::onResponse(int postActionId, QString response) {
         QString songURL = getSongData(response)["SongURL"].toString();
         qDebug() << "Song URL: " << songURL << endl;
 
-        player->stop();
-        player->setMedia(QUrl(songURL));
-        player->setVolume(100);
-        player->play();
+        this->player->stop();
+        this->player->setMedia(QUrl(songURL));
+        this->player->setVolume(this->volumeLevel);
+        this->player->play();
 
         break;
     }
+}
+
+void QPlayer::onPause() {
+    qDebug() << "Song paused" << endl;
+    this->player->pause();
+}
+
+void QPlayer::onPlay() {
+    qDebug() << "Continue playing" << endl;
+    this->player->play();
+}
+
+void QPlayer::onStop() {
+    qDebug() << "Song stopped" << endl;
+    this->player->stop();
+}
+
+void QPlayer::onSetVolume(int vol) {
+    if (vol > 100 || vol < 0) {
+        vol = 100;
+    }
+
+    this->player->setVolume(vol);
 }
 
 void QPlayer::start() {
@@ -78,4 +101,9 @@ void QPlayer::start() {
     connect(this->gsRequest, SIGNAL(dataPosted(int, QString)),
             this, SLOT(onResponse(int, QString)));
 
+}
+
+void QPlayer::onReceiveSongId(ulong songId) {
+    qDebug() << "Request to play song ID: " << songId << " received. queing.. ";
+    this->getStreamKeyFromSongIDEx(songId);
 }

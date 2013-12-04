@@ -56,7 +56,7 @@ void QPlayer::onResponse(int postActionId, QString response) {
     switch (postActionId) {
     case 5:
         QString songURL = getSongData(response)["SongURL"].toString();
-        qDebug() << "Song URL: " << songURL << endl;
+        qDebug() << "Buffering... " << endl;
 
         this->player->stop();
         this->player->setMedia(QUrl(songURL));
@@ -101,9 +101,20 @@ void QPlayer::start() {
     connect(this->gsRequest, SIGNAL(dataPosted(int, QString)),
             this, SLOT(onResponse(int, QString)));
 
+    connect(this->player, SIGNAL(bufferStatusChanged(int)),
+            this, SLOT(onBufferingProgress(int)));
 }
 
 void QPlayer::onReceiveSongId(ulong songId) {
     qDebug() << "Request to play song ID: " << songId << " received. queing.. ";
     this->getStreamKeyFromSongIDEx(songId);
 }
+
+void QPlayer::QPlayer::onBufferingProgress(int progress) {
+    qDebug() << progress << "%...";
+
+    if (progress == 100) {
+        this->player->play();
+    }
+}
+

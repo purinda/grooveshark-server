@@ -12,7 +12,8 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     // Init config
-    //QConfig::instance()->initConfig(&a);
+    QConfig::instance()->initConfig(a.applicationDirPath());
+    //exit(1);
 
     //
     // Start TCP Server thread
@@ -62,5 +63,8 @@ int main(int argc, char *argv[])
     threadServer->start();
     threadPlayer->start();
 
-    return a.exec();
+    const int ret = a.exec();
+    QConfig::instance()->writeSettings();
+
+    return ret;
 }

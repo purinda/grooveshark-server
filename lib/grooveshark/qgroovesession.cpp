@@ -15,10 +15,29 @@ QGrooveSession::QGrooveSession(QObject *parent) : QObject(parent) {
 }
 
 void QGrooveSession::onLoadTokenDataSlot(QNetworkReply* reply) {
-    // Reading attributes of the reply
-    QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    // Or the target URL if it was a redirect:
-    QVariant redirectionTargetUrl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+
+    // Read existing settings
+    QString existingSessionId     = QConfig::instance()->getSetting("Grooveshark/session", "").toString();
+    QString existingEndpoint      = QConfig::instance()->getSetting("Grooveshark/endpoint", "").toString();
+    QJsonDocument existingCountry = QJsonDocument::fromJson(QConfig::instance()->getSetting("Grooveshark/country", "")
+                                                            .toByteArray());
+    QDateTime lastrun             = QConfig::instance()->getSetting("Grooveshark/lastsession", QDateTime::currentDateTime()).toDateTime();
+
+    // Check existing session is more than 7 days old if so renew else keep using it...
+    bool useExistingSession = false;
+    if (lastrun.addDays(7) > QDateTime::currentDateTime()) {
+        useExistingSession = true;
+    }
+
+    // Set settings read and emit getCommunicationToken
+    if (useExistingSession && existingSessionId.length() > 1) {
+        this->gsSessionId = existingSessionId;
+        this->gsEndpoint  = existingEndpoint;
+        this->gsCountry   = existingCountry.object();
+
+        this->getCommunicationToken();
+        return;
+    }
 
     // no error ?
     if (reply->error() == QNetworkReply::NoError)
@@ -38,6 +57,12 @@ void QGrooveSession::onLoadTokenDataSlot(QNetworkReply* reply) {
             this->gsSessionId = value.toObject()["sessionID"].toString();
             this->gsEndpoint  = value.toObject()["endpoint"].toString();
             this->gsCountry   = value.toObject()["country"].toObject();
+
+            // Save retrieved settings
+            QConfig::instance()->setSetting("Grooveshark/session", this->gsSessionId);
+            QConfig::instance()->setSetting("Grooveshark/endpoint", this->gsEndpoint);
+            QConfig::instance()->setSetting("Grooveshark/country", this->getCountryJsonString());
+            QConfig::instance()->setSetting("Grooveshark/lastsession", QDateTime::currentDateTime());
         }
 
         qDebug() << "Session ID: " << this->gsSessionId << endl;

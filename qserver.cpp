@@ -6,21 +6,6 @@ QServer::QServer(QObject *parent) :
 }
 
 void QServer::start() {
-
-    if (networkSession) {
-         QNetworkConfiguration config = networkSession->configuration();
-         QString id;
-         if (config.type() == QNetworkConfiguration::UserChoice)
-             id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
-         else
-             id = config.identifier();
-
-         QSettings settings(QSettings::UserScope, QLatin1String("Trolltech"));
-         settings.beginGroup(QLatin1String("QtNetwork"));
-         settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
-         settings.endGroup();
-     }
-
      tcpServer = new QTcpServer(this);
      if (!tcpServer->listen()) {
          qDebug() << "Unable to start the GrooveShark server! Aborting... " << endl;
@@ -84,16 +69,16 @@ void QServer::onResponse() {
 
         if (command == "PLAY") {
             if (param.toInt() != 0) {
+                // Start a new song
                 emit playSong(param.toULong());
+            } else {
+                // Continue playing a paused/stopped song
+                emit playSong();
             }
         }
 
         if (command == "PAUSE") {
             emit pauseSong();
-        }
-
-        if (command == "PLAY") {
-            emit playSong();
         }
 
         if (command == "STOP") {
@@ -111,7 +96,6 @@ void QServer::onResponse() {
         }
 
         qDebug() << ">> " << line << endl;
-        // qDebug() << "Command: " << command << endl << "Param: " << param << endl;
     }
 }
 

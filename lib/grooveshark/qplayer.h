@@ -37,6 +37,8 @@ public slots:
     void onPlay();
     void onStop();
     void onSetVolume(int vol);
+    void onBufferingProgress(int progress);
 };
 
 #endif // QPLAYER_H
+

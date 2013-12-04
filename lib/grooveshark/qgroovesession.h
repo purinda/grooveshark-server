@@ -7,6 +7,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include "qrequest.h"
+#include "qconfig.h"
 
 class QGrooveSession : public QObject
 {

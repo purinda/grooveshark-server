@@ -5,7 +5,6 @@
 #include <QMutex>
 #include <QSettings>
 #include <QtCore>
-#include <QCoreApplication>
 
 class QConfig : public QObject
 {
@@ -39,7 +38,11 @@ public:
     }
 
     // Functions
-    void initConfig(QCoreApplication *app);
+    void initConfig(QString appDir);
+    QVariant getSetting(QString setting, QVariant defaultVal);
+    void writeSettings();
+    void setSetting(QString setting, QVariant value);
+
 private:
     QConfig() {}
 

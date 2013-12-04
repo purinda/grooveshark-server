@@ -39,7 +39,7 @@ void QRequest::postData(QString url, QString data, int postActionId) {
     QNetworkRequest request;
     request.setUrl(urlObj);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setRawHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.47 Safari/536.11");
+    request.setRawHeader("User-Agent", QRequest::USER_AGENT);
 
     manager->post(request, data.toUtf8());
 }

@@ -8,7 +8,19 @@ QConfig::QConfig(QObject *parent) :
 
 }
 
-void QConfig::initConfig(QCoreApplication *app) {
-    this->qsettings = new QSettings(app->applicationDirPath() + QDir::separator() + "settings.xml",
-                                    QSettings::NativeFormat);
+void QConfig::initConfig(QString appDir) {
+    this->qsettings = new QSettings(appDir + QDir::separator() + "settings.ini",
+                                    QSettings::IniFormat);
+}
+
+void QConfig::setSetting(QString setting, QVariant value) {
+    this->qsettings->setValue(setting, value);
+}
+
+void QConfig::writeSettings() {
+    this->qsettings->sync();
+}
+
+QVariant QConfig::getSetting(QString setting, QVariant defaultVal) {
+    return this->qsettings->value(setting, defaultVal);
 }

@@ -11,6 +11,7 @@
 #include <QMutex>
 #include <QThread>
 #include <QRegExp>
+#include "qconfig.h"
 
 class QTcpServer;
 class QNetworkSession;
@@ -23,7 +24,7 @@ private:
     QNetworkSession *networkSession;
     QTcpSocket *clientConnection;
 
-    QMutex mMutex;
+    QMutex mMutex, mClientConnection, mRequestLocker;
     bool mRunThread;
 
     bool getRunThread();

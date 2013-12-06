@@ -1,6 +1,7 @@
 Goal
 -----
-
+Server which gives multiple users ability to connect, queue and play songs. Goal was to build an embedded streaming device using a Raspberry Pi single board computer.
+Ideally you run this application on a Raspberry Pi and connect a sound system to it, then use the Web UI to control media queued.
 
 Setting up Raspberry Pi
 --------------------------
@@ -14,12 +15,16 @@ Use the following URL to grab the Arch image for ARMv6 and follow instructions o
 http://archlinuxarm.org/platforms/armv6/raspberry-pi
 
 Arch specific setup
-    1. Set following modules for pulseaudio in /etc/pulse/default.pa
+    1. Set following modules for pulseaudio in /etc/pulse/default.pa and reboot
     ### Load the integrated pulseaudio equalizer and dbus module
     load-module module-equalizer-sink
     load-module module-dbus-protocol
 
-    2.
+    2. start pulseaudio service
+    "pulseaudio --start"
+
+    3. Run the following command to set sampling rate required for pulseaudio
+    "sed 's/; default-sample-rate = 44100/default-sample-rate = 96000/g' -i /etc/pulse/daemon.conf"
 
 
 Common Issues
@@ -34,14 +39,8 @@ These are some of the problems I came across while trying to get the app to work
     2. Error: "Configured audiosink audiosink is not working."
     Refer to https://wiki.archlinux.org/index.php/Raspberry_Pi#Audio
 
-    4. No sound (try setting GST_DEBUG as per below to WARN)
-    first check whether you started pulseaudio. try "pulseaudio --start"
-    Refer to https://wiki.archlinux.org/index.php/PulseAudio
-    if you see a warning such as " WARN      playsinkconvertbin gstplaysinkconvertbin.c:481:gst_play_sink_convert_bin_cache_converter_caps:<GstPlaySinkAudioConvert@0x1ab030> No conversion elements"
-    run the following command which will set sampling rate for pulseaudio output device.
-    "sed 's/; default-sample-rate = 44100/default-sample-rate = 96000/g' -i /etc/pulse/daemon.conf"
-
-    5. No sound (god level debugging :) )
+    3. No sound (god level debugging :) )
     if not most probably the problem is with gstreamer library, what you can do is set debug level for gstreamer using the environment variables
     try something like "export GST_DEBUG=5" in the same terminal session that you run your grooveshark app. For all DEBUG levels refer to
     http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gst-running.html
+    and refer to https://wiki.archlinux.org/index.php/PulseAudio

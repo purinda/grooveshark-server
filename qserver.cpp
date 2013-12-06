@@ -7,7 +7,8 @@ QServer::QServer(QObject *parent) :
 
 void QServer::start() {
      tcpServer = new QTcpServer(this);
-     if (!tcpServer->listen()) {
+
+     if (!tcpServer->listen(QHostAddress::Any, QConfig::instance()->getSetting("Grooveshark/port", 16444).toInt())) {
          qDebug() << "Unable to start the GrooveShark server! Aborting... " << endl;
          tcpServer->close();
          return;
@@ -33,11 +34,13 @@ void QServer::start() {
                      .arg(ipAddress).arg(tcpServer->serverPort()));
 
      connect(this->tcpServer, SIGNAL(newConnection()),
-             this, SLOT(onClientRequest()));
+             this, SLOT(onClientRequest()), Qt::QueuedConnection);
 
 }
 
 void QServer::onClientRequest() {
+    QMutexLocker locker(&mClientConnection);
+
     qDebug() << "Client connected" << endl;
 
     clientConnection = tcpServer->nextPendingConnection();
@@ -45,11 +48,13 @@ void QServer::onClientRequest() {
             clientConnection, SLOT(deleteLater()));
 
     connect(clientConnection, SIGNAL(readyRead()),
-            this, SLOT(onResponse()));
+            this, SLOT(onResponse()), Qt::QueuedConnection);
 }
 
 void QServer::onResponse() {
-    qDebug() << "Request received" << endl;
+    QMutexLocker locker(&mRequestLocker);
+
+    qDebug() << "Request received " << endl;
 
     QRegExp matchRequests("(\\w+)\\s?(\\d*)");
     QString command, param;
@@ -58,7 +63,7 @@ void QServer::onResponse() {
     {
         QByteArray ba = clientConnection->readLine();
         QString line  = QString(ba).simplified();
-
+        qDebug() << "Request: " << line << endl;
         command.clear();
         param.clear();
 
@@ -97,6 +102,7 @@ void QServer::onResponse() {
 
         qDebug() << ">> " << line << endl;
     }
+
 }
 
 QString QServer::readLine(QTcpSocket *socket )

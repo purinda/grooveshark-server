@@ -47,15 +47,20 @@ int main(int argc, char *argv[])
     // IPC Signals required between server and player
     //
     QObject::connect(tcpServer, SIGNAL(playSong(ulong)),
-                     gsPlayer, SLOT(onReceiveSongId(ulong)));
+                     gsPlayer, SLOT(onReceiveSongId(ulong)),
+                     Qt::QueuedConnection);
     QObject::connect(tcpServer, SIGNAL(pauseSong()),
-                     gsPlayer, SLOT(onPause()));
+                     gsPlayer, SLOT(onPause()),
+                     Qt::QueuedConnection);
     QObject::connect(tcpServer, SIGNAL(playSong()),
-                     gsPlayer, SLOT(onPlay()));
+                     gsPlayer, SLOT(onPlay()),
+                     Qt::QueuedConnection);
     QObject::connect(tcpServer, SIGNAL(stopSong()),
-                     gsPlayer, SLOT(onStop()));
+                     gsPlayer, SLOT(onStop()),
+                     Qt::QueuedConnection);
     QObject::connect(tcpServer, SIGNAL(setVolume(int)),
-                     gsPlayer, SLOT(onSetVolume(int)));
+                     gsPlayer, SLOT(onSetVolume(int)),
+                     Qt::QueuedConnection);
 
     //
     // Start threads

@@ -10,6 +10,8 @@ So connect this at home or office and keep your favourite music going!
 
 #How does it work?
 Application is built on top of [Grooveshark music streaming service](http://www.grooveshark.com) using an unofficial API to connect and stream songs.
+Unoffical API that I *had* to write (since they dont have a public streaming API for "everyone") can be found in lib/grooveshark.
+
 ## Dependancies
 * Qt 5 or greater
 * GStreamer (compiled or plugins with mpeg3 decoder, http streaming capabilities.)

@@ -1,5 +1,5 @@
 #Grooveshark Server
-This can be run on any computer as an application or on a raspberry pi or any other single board computer as a server and let others connect to it and play songs using the [https://github.com/purinda/grooveshark-webui](Web front-end hosted).
+This can be run on any computer as an application or on a raspberry pi or any other single board computer as a server and let others connect to it and play songs using the [Web front-end](https://github.com/purinda/grooveshark-webui).
 Server implements a TCP Server which implements very few commands just so it can Play, Pause, Stop and change Volume levels.
 
 #Goal
@@ -9,7 +9,10 @@ Ideally you run this application on a Raspberry Pi and connect a sound system to
 So connect this at home or office and keep your favourite music going!
 
 #How does it work?
-Application is built on top of [http://www.grooveshark.com](Grooveshark music streaming service) using an unofficial API to connect and stream songs.
+Application is built on top of [Grooveshark music streaming service](http://www.grooveshark.com) using an unofficial API to connect and stream songs.
+## Dependancies
+* Qt 5 or greater
+* GStreamer (compiled or plugins with mpeg3 decoder, http streaming capabilities.)
 
 #Wishlist for Christmas
 * Implement JSON based communication protocol.

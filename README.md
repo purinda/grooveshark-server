@@ -14,6 +14,18 @@ Application is built on top of [Grooveshark music streaming service](http://www.
 * Qt 5 or greater
 * GStreamer (compiled or plugins with mpeg3 decoder, http streaming capabilities.)
 
+#Steps required to get it to work
+* Download the (latest codebase)[https://github.com/purinda/grooveshark-server/archive/master.zip] or clone the git repo.
+* Install Qt 5 development tools, (Download)[http://qt-project.org] or use the package manager provided in your OS.
+* Once Qt 5 development tools are installed (with GCC, included with Qt) run following commands in the project folder.
+```
+mkdir release && cd release
+qmake ../grooveshark.pro
+make
+```
+* You should get a compiled binary called 'grooveshark' in the relesae folder provided you have required dependancies installed and application was compiled without issues.
+* That's it! just run ```./grooveshark```, it binds to port 16444 to host the service. Use your telnet client (from the same machine or different computer in the network) and connect to it (telnet [ip-of-grooveshark-box] 16444).
+
 #Wishlist for Christmas
 * Implement JSON based communication protocol.
 * Add music caching so all songs that gets played at least once gets cached on a path, which can be downloaded if required. Potentially save bandwidth if you are like me who shuffle the same playlist over and over again.

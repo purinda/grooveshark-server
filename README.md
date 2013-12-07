@@ -15,8 +15,8 @@ Application is built on top of [Grooveshark music streaming service](http://www.
 * GStreamer (compiled or plugins with mpeg3 decoder, http streaming capabilities.)
 
 #Steps required to get it to work
-* Download the (latest codebase)[https://github.com/purinda/grooveshark-server/archive/master.zip] or clone the git repo.
-* Install Qt 5 development tools, (Download)[http://qt-project.org] or use the package manager provided in your OS.
+* Download the [latest codebase](https://github.com/purinda/grooveshark-server/archive/master.zip) or clone the git repo.
+* Install Qt 5 development tools, [Download](http://qt-project.org) or use the package manager provided in your OS.
 * Once Qt 5 development tools are installed (with GCC, included with Qt) run following commands in the project folder.
 ```
 mkdir release && cd release

@@ -56,12 +56,11 @@ void QPlayer::onResponse(int postActionId, QString response) {
     switch (postActionId) {
     case 5:
         QString songURL = getSongData(response)["SongURL"].toString();
-        qDebug() << "Buffering... " << endl;
+        qDebug() << "Buffering... ";
 
-        this->player->stop();
         this->player->setMedia(QUrl(songURL));
         this->player->setVolume(this->volumeLevel);
-        this->player->play();
+        this->player->stop();
 
         break;
     }
@@ -91,7 +90,7 @@ void QPlayer::onSetVolume(int vol) {
 }
 
 void QPlayer::start() {
-    this->player    = new QMediaPlayer;
+    this->player    = new QMediaPlayer(0, QMediaPlayer::Flag::StreamPlayback);
     this->gsSession = new QGrooveSession();
     this->gsRequest = new QRequest();
 
@@ -113,6 +112,9 @@ void QPlayer::onReceiveSongId(ulong songId) {
 void QPlayer::QPlayer::onBufferingProgress(int progress) {
     qDebug() << progress << "%...";
 
+    // TODO: Fix this shit. For some reason on rPi you need to stop and replay
+    // once the buffering is done. This must be a bug in the compile libraries for ARMv6.
+    // This needs a fix!!!
     if (progress == 100) {
         this->player->play();
     }

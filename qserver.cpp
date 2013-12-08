@@ -59,6 +59,7 @@ void QServer::onResponse() {
     QRegExp matchRequests("(\\w+)\\s?(\\d*)");
     QString command, param;
 
+    qDebug() << "Bytes available: " << clientConnection->bytesAvailable() << endl;
     while(clientConnection->canReadLine())
     {
         QByteArray ba = clientConnection->readLine();
@@ -91,7 +92,7 @@ void QServer::onResponse() {
         }
 
         if (command == "VOL") {
-            if (param.toInt() != 0) {
+            if (param.toInt() >= 0 && param.toInt() <= 100) {
                 emit setVolume(param.toInt());
             }
         }

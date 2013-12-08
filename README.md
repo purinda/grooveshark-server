@@ -8,6 +8,8 @@ Goal was to build an embedded streaming device using a Raspberry Pi single board
 Ideally you run this application on a Raspberry Pi and connect a sound system to it, then use the Web UI to control media.
 So connect this at home or office and keep your favourite music going!
 
+[![Demo using a Raspberry Pi](http://theredblacktree.files.wordpress.com/2013/12/screenshot-from-2013-12-09-002915.png)](https://www.youtube.com/watch?v=hrwOu0XkkJg)
+
 #How does it work?
 Application is built on top of [Grooveshark music streaming service](http://www.grooveshark.com) using an unofficial API to connect and stream songs.
 Unoffical API that I *had* to write (since they dont have a public streaming API for "everyone") can be found in lib/grooveshark.

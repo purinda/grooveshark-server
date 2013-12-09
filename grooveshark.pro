@@ -20,11 +20,13 @@ SOURCES += main.cpp \
     lib/grooveshark/qgroovesession.cpp \
     lib/grooveshark/qrequest.cpp \
     qserver.cpp \
-    qconfig.cpp
+    qconfig.cpp \
+    qserverchildthread.cpp
 
 HEADERS += \
     lib/grooveshark/qplayer.h \
     lib/grooveshark/qgroovesession.h \
     lib/grooveshark/qrequest.h \
     qserver.h \
-    qconfig.h
+    qconfig.h \
+    qserverchildthread.h

@@ -129,6 +129,7 @@ QString QServer::readLine(QTcpSocket *socket )
             }
         }
     }
+
     return line;
 }
 

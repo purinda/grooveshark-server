@@ -13,60 +13,42 @@ int main(int argc, char *argv[])
 
     // Init config
     QConfig::instance()->initConfig(a.applicationDirPath());
-    //exit(1);
 
-    //
-    // Start TCP Server thread
-    //
-    QServer *tcpServer    = new QServer();
+    QServer *tcpServer = new QServer();
+    if (!tcpServer->listen(QHostAddress::AnyIPv4, 16444)) {
+        qDebug() << QString("Unable to start the server: %1.").arg(tcpServer->errorString());
+        exit(1);
+    }
+
     QThread *threadServer = new QThread;
     tcpServer->moveToThread(threadServer);
-
-    QObject::connect(threadServer,SIGNAL(started()),
-                     tcpServer, SLOT(start()));
-    QObject::connect(tcpServer, SIGNAL(finished()),
-                     threadServer, SLOT(quit()));
-    QObject::connect(tcpServer, SIGNAL(finished()),
-                     tcpServer, SLOT(deleteLater()));
-    QObject::connect(threadServer, SIGNAL(finished()),
-                     threadServer, SLOT(deleteLater()));
 
     //
     // Start Grooveshark Player thread
     //
     QPlayer *gsPlayer     = new QPlayer();
     QThread *threadPlayer = new QThread;
-    gsPlayer->moveToThread(threadServer);
+    gsPlayer->moveToThread(threadPlayer);
 
     QObject::connect(threadPlayer,SIGNAL(started()),
                      gsPlayer, SLOT(start()));
+
     QObject::connect(threadPlayer, SIGNAL(finished()),
                      threadPlayer, SLOT(deleteLater()));
 
     //
     // IPC Signals required between server and player
     //
-    QObject::connect(tcpServer, SIGNAL(playSong(ulong)),
-                     gsPlayer, SLOT(onReceiveSongId(ulong)),
-                     Qt::QueuedConnection);
-    QObject::connect(tcpServer, SIGNAL(pauseSong()),
-                     gsPlayer, SLOT(onPause()),
-                     Qt::QueuedConnection);
-    QObject::connect(tcpServer, SIGNAL(playSong()),
-                     gsPlayer, SLOT(onPlay()),
-                     Qt::QueuedConnection);
-    QObject::connect(tcpServer, SIGNAL(stopSong()),
-                     gsPlayer, SLOT(onStop()),
-                     Qt::QueuedConnection);
-    QObject::connect(tcpServer, SIGNAL(setVolume(int)),
-                     gsPlayer, SLOT(onSetVolume(int)),
+    qRegisterMetaType<Player::Command>("Player::Command");
+    QObject::connect(tcpServer, SIGNAL(sendCommand(Player::Command, quint32)),
+                     gsPlayer, SLOT(onCommand(Player::Command, quint32)),
                      Qt::QueuedConnection);
 
     //
     // Start threads
     //
-    threadServer->start();
     threadPlayer->start();
+    threadServer->start();
 
     const int ret = a.exec();
     QConfig::instance()->writeSettings();

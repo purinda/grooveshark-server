@@ -66,28 +66,37 @@ void QPlayer::onResponse(int postActionId, QString response) {
     }
 }
 
-void QPlayer::onPause() {
-    qDebug() << "Song paused" << endl;
-    this->player->pause();
-}
+void QPlayer::onCommand(Player::Command command, quint32 param1) {
+    switch (command) {
+    case Player::Play:
+        // Buffer a new song or continue playing the buffered
+        if (param1 > 0) {
+            qDebug() << "Request to play song ID: " << param1 << " received. queing.. ";
+            this->getStreamKeyFromSongIDEx(param1);
+        } else {
+            qDebug() << "Continue playing" << endl;
+            this->player->play();
+        }
 
-void QPlayer::onPlay() {
-    qDebug() << "Continue playing" << endl;
-    this->player->play();
-}
-
-void QPlayer::onStop() {
-    qDebug() << "Song stopped" << endl;
-    this->player->stop();
-}
-
-void QPlayer::onSetVolume(int vol) {
-    if (vol > 100 || vol < 0) {
-        vol = 100;
+        break;
+    case Player::Pause:
+        qDebug() << "Song paused" << endl;
+        this->player->pause();
+        break;
+    case Player::Stop:
+        qDebug() << "Song stopped" << endl;
+        this->player->stop();
+        break;
+    case Player::SetVol:
+        if (param1 > 100 || param1 < 0) {
+            param1 = 100;
+        }
+        this->volumeLevel = param1;
+        this->player->setVolume(this->volumeLevel);
+        break;
     }
-
-    this->player->setVolume(vol);
 }
+
 
 void QPlayer::start() {
     this->player    = new QMediaPlayer(0, QMediaPlayer::Flag::StreamPlayback);
@@ -104,10 +113,6 @@ void QPlayer::start() {
             this, SLOT(onBufferingProgress(int)));
 }
 
-void QPlayer::onReceiveSongId(ulong songId) {
-    qDebug() << "Request to play song ID: " << songId << " received. queing.. ";
-    this->getStreamKeyFromSongIDEx(songId);
-}
 
 void QPlayer::QPlayer::onBufferingProgress(int progress) {
     qDebug() << progress << "%...";

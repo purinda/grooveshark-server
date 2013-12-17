@@ -10,18 +10,27 @@ class QServerChildThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit QServerChildThread(QObject *parent = 0);
-
-    QServerChildThread(int socketDescriptor, QObject *parent);
+    QServerChildThread(qintptr socketDescriptor, QObject *parent);
     void run();
 
 private:
-    int socketDescriptor;
+    qintptr socketDescriptor;
+    QTcpSocket *clientConnection;
+
+    int waitForInput(QTcpSocket *socket);
+    QString readLine(QTcpSocket *socket);
+    void writeLine(QTcpSocket *socket, const QString &line);
+
+public slots:
+    void onResponse();
 
 signals:
     void error(QTcpSocket::SocketError socketError);
-
-public slots:
+    // Signals used for controlling the player
+    void playSong(quint32 songId);
+    void setVolume(int volume);
+    void pauseSong();
+    void stopSong();
 
 };
 

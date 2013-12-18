@@ -7,6 +7,15 @@
 #include "qrequest.h"
 #include "qgroovesession.h"
 
+namespace Player {
+    enum Command {
+        Play,
+        Pause,
+        Stop,
+        SetVol
+    };
+}
+
 class QPlayer : public QObject
 {
 private:
@@ -32,11 +41,7 @@ public slots:
     void start();
 
     // Player control
-    void onReceiveSongId(ulong songId);
-    void onPause();
-    void onPlay();
-    void onStop();
-    void onSetVolume(int vol);
+    void onCommand(Player::Command command, quint32 param1);
     void onBufferingProgress(int progress);
 };
 

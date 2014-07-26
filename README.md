@@ -17,6 +17,7 @@ Unoffical API that I *had* to write (since they dont have a public streaming API
 ## Dependancies
 * Qt 5 or greater
 * GStreamer (compiled or plugins with mpeg3 decoder, http streaming capabilities.)
+* libgl1-mesa-dev (for Qt5)
 
 #Steps required to get it to work
 * Download the [latest codebase](https://github.com/purinda/grooveshark-server/archive/master.zip) or clone the git repo.
@@ -77,7 +78,7 @@ pacman -S gst-plugins-good gstreamer0.10-good-plugins gstreamer0.10-bad-plugins 
 * Error: "Configured audiosink audiosink is not working."
 Refer to https://wiki.archlinux.org/index.php/Raspberry_Pi#Audio
 
-* No sound (god level debugging :) )
+* No sound ? 
 if not most probably the problem is with gstreamer library, what you can do is set debug level for gstreamer using the environment variables
 try something like "export GST_DEBUG=5" in the same terminal session that you run your grooveshark app. For all DEBUG levels refer to
 http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gst-running.html

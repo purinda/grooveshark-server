@@ -1,8 +1,8 @@
-#Grooveshark Server
+# Grooveshark Server
 This can be run on any computer as an application or on a raspberry pi or any other single board computer as a server and let others connect to it and play songs using the [Web front-end](https://github.com/purinda/grooveshark-webui).
 Server implements a TCP Server which implements very few commands just so it can Play, Pause, Stop and change Volume levels.
 
-#Goal
+# Goal
 This gives users ability to connect, queue and play songs from almost any device that can connect to the local network that is hosting the service.
 Goal was to build an embedded streaming device using a Raspberry Pi single board computer.
 Ideally you run this application on a Raspberry Pi and connect a sound system to it, then use the Web UI to control media.
@@ -10,7 +10,7 @@ So connect this at home or office and keep your favourite music going!
 
 [![Demo using a Raspberry Pi](http://theredblacktree.files.wordpress.com/2013/12/screenshot-from-2013-12-09-002915.png)](https://www.youtube.com/watch?v=hrwOu0XkkJg)
 
-#How does it work?
+# How does it work?
 Application is built on top of [Grooveshark music streaming service](http://www.grooveshark.com) using an unofficial API to connect and stream songs.
 Unoffical API that I *had* to write (since they dont have a public streaming API for "everyone") can be found in lib/grooveshark.
 
@@ -19,7 +19,7 @@ Unoffical API that I *had* to write (since they dont have a public streaming API
 * GStreamer (compiled or plugins with mpeg3 decoder, http streaming capabilities.)
 * libgl1-mesa-dev (for Qt5)
 
-#Steps required to get it to work
+# Steps required to get it to work
 * Download the [latest codebase](https://github.com/purinda/grooveshark-server/archive/master.zip) or clone the git repo.
 * Install Qt 5 development tools, [Download](http://qt-project.org) or use the package manager provided in your OS.
 * Once Qt 5 development tools are installed (with GCC, included with Qt) run following commands in the project folder.
@@ -31,12 +31,12 @@ make
 * You should get a compiled binary called 'grooveshark' in the relesae folder provided you have required dependancies installed and application was compiled without issues.
 * That's it! just run ```./grooveshark```, it binds to port 16444 to host the service. Use your telnet client (from the same machine or different computer in the network) and connect to it (telnet [ip-of-grooveshark-box] 16444).
 
-#Wishlist for Christmas
+# Wishlist for Christmas
 * Implement JSON based communication protocol.
 * Add music caching so all songs that gets played at least once gets cached on a path, which can be downloaded if required. Potentially save bandwidth if you are like me who shuffle the same playlist over and over again.
 * Direct music download, or a way to send the music files back to user making this application a general purpose music downloader.
 
-#Setting up Raspberry Pi
+# Setting up Raspberry Pi
 I picked Arch Linux image for Raspberry Pi for the reasons listed below.
 * Raspbian (official raspberry pi distro) is based on Debian Wheezy and didn't have Qt5 package in their official repos.
   Tried installing backport from sid but without latest libc you cannot install Qt5 (since its compiled against the latest libc).
@@ -46,7 +46,7 @@ I picked Arch Linux image for Raspberry Pi for the reasons listed below.
 Use the following URL to grab the Arch image for ARMv6 and follow instructions on the page to copy it to a SDCard.
 http://archlinuxarm.org/platforms/armv6/raspberry-pi
 
-##Archlinux specific setup
+### Archlinux specific setup
 * Set following modules for pulseaudio in /etc/pulse/default.pa and reboot
 ```
 ### Load the integrated pulseaudio equalizer and dbus module
@@ -63,7 +63,7 @@ load-module module-dbus-protocol
 ```
 
 
-#Having problems?
+# Having problems?
 These are some of the problems I came across while trying to get the app to work on rPI.
 * When you try to play a song on the server side I got "Error: No URI handler imlemented for 'http'"
 or
